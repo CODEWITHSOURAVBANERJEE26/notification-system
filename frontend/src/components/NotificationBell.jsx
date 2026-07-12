@@ -10,6 +10,11 @@ function NotificationBell({ tenantId, userId }) {
     const [showList, setShowList] = useState(false);
     const [error, setError] = useState("");
 
+    const headers = {
+        "X-Tenant-Id": tenantId,
+        "X-User-Id": userId
+    };
+
     useEffect(() => {
 
         fetchUnreadCount();
@@ -25,11 +30,6 @@ function NotificationBell({ tenantId, userId }) {
         return () => clearInterval(interval);
 
     }, [tenantId, userId]);
-
-    const headers = {
-        "X-Tenant-Id": tenantId,
-        "X-User-Id": userId
-    };
 
     const fetchUnreadCount = async () => {
 
@@ -115,44 +115,81 @@ function NotificationBell({ tenantId, userId }) {
 
     };
 
+    const inviteMember = async () => {
+
+        try {
+
+            await axios.post(
+                `${BASE_URL}/notifications/trigger/member-invited`,
+                {},
+                { headers }
+            );
+
+            fetchUnreadCount();
+            fetchNotifications();
+
+        } catch (error) {
+
+            console.log(error);
+
+        }
+
+    };
+
+    const creatorReply = async () => {
+
+        try {
+
+            await axios.post(
+                `${BASE_URL}/notifications/trigger/creator-reply`,
+                {},
+                { headers }
+            );
+
+            fetchUnreadCount();
+            fetchNotifications();
+
+        } catch (error) {
+
+            console.log(error);
+
+        }
+
+    };
+
     return (
 
-        <div
-            style={{
-                width: "700px",
-                margin: "30px auto",
-                fontFamily: "Arial"
-            }}
-        >
+        <div className="notification-card">
 
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    borderBottom: "1px solid #ddd",
-                    paddingBottom: "20px"
-                }}
-            >
+            <div className="header">
 
-                <h2>
-                    Notification System
-                    <br />
-                    <small>
+                <div>
+
+                    <h2>Notification System</h2>
+
+                    <small className="tenant">
                         Tenant: {tenantId} | User: {userId}
                     </small>
-                </h2>
+
+                    <div className="events">
+
+                        <button onClick={inviteMember}>
+                            Invite Member
+                        </button>
+
+                        <button onClick={creatorReply}>
+                            Creator Reply
+                        </button>
+
+                    </div>
+
+                </div>
 
                 <div
-                    style={{
-                        fontSize: "30px",
-                        cursor: "pointer"
-                    }}
+                    className="bell"
                     onClick={() => setShowList(!showList)}
                 >
-
                     🔔 {count}
-
                 </div>
 
             </div>
@@ -160,16 +197,7 @@ function NotificationBell({ tenantId, userId }) {
             {
                 error && (
 
-                    <div
-                        style={{
-                            marginTop: "20px",
-                            padding: "15px",
-                            backgroundColor: "#ffecec",
-                            color: "#d8000c",
-                            border: "1px solid #d8000c",
-                            borderRadius: "8px"
-                        }}
-                    >
+                    <div className="error">
 
                         <strong>Backend Connection Error</strong>
 
@@ -205,4 +233,3 @@ function NotificationBell({ tenantId, userId }) {
 }
 
 export default NotificationBell;
-
