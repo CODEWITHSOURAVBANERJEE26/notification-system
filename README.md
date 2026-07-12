@@ -1,14 +1,16 @@
 # Multi-Tenant Notification System
 
-A full-stack Multi-Tenant Notification System built using **Node.js, Express.js, MongoDB Atlas, Mongoose, React (Vite), and Axios**. The application demonstrates how notifications can be created, retrieved, counted, and managed while maintaining tenant isolation.
+A full-stack Multi-Tenant Notification System built using **Node.js, Express.js, MongoDB Atlas, Mongoose, React (Vite), and Axios**. The application demonstrates how notifications can be created, retrieved, counted, and managed while maintaining complete tenant isolation.
 
 ---
 
 # Project Overview
 
-This project implements a Multi-Tenant Notification System where users receive and manage notifications while maintaining complete tenant isolation. Each notification request is associated with a specific tenant and user, ensuring that users can access only their own notifications.
+This project implements a Multi-Tenant Notification System where users can receive, manage, and monitor notifications while maintaining complete tenant isolation.
 
-The backend exposes REST APIs for notification management, while the frontend provides a clean and responsive interface for viewing notifications, unread counts, and notification status. MongoDB Atlas is used for data persistence, and tenant isolation is implemented through request headers.
+The backend provides RESTful APIs for notification management, while the frontend offers an interactive interface for switching tenants, simulating business events, viewing notifications, checking unread counts, and managing notification status.
+
+Tenant isolation is implemented using request headers, ensuring that every tenant accesses only its own notifications.
 
 ---
 
@@ -20,23 +22,29 @@ The backend exposes REST APIs for notification management, while the frontend pr
 - Create notifications
 - Retrieve notifications
 - Retrieve unread notification count
-- Mark individual notifications as read
+- Mark notification as read
 - Mark all notifications as read
-- Trigger notification generation APIs
+- Business event trigger APIs
 - Request-header based tenant and user identification
-- MongoDB data persistence using Mongoose
+- MongoDB Atlas data persistence using Mongoose
 - RESTful API architecture
 
 ## Frontend
 
+- Responsive notification dashboard
 - Notification Bell
 - Notification List
 - Unread notification counter
+- Tenant selector (Tenant 1 / Tenant 2)
+- User selector (User 1 / User 2)
+- Business event simulation
+  - Invite Member
+  - Creator Reply
 - Mark notification as read
 - Mark all notifications as read
-- Automatic polling every 30 seconds
-- Empty state handling
+- Automatic polling every **10 seconds**
 - Backend connection handling
+- Empty state handling
 
 ---
 
@@ -78,6 +86,8 @@ notification-system
 ├── frontend
 │   ├── public
 │   ├── src
+│   ├── components
+│   ├── services
 │   ├── package.json
 │   ├── package-lock.json
 │   ├── vite.config.js
@@ -128,7 +138,7 @@ An example configuration is available in:
 backend/.env.example
 ```
 
-Run the backend.
+Start the backend server.
 
 ```bash
 npm run dev
@@ -150,7 +160,7 @@ Install dependencies.
 npm install
 ```
 
-Run the frontend.
+Start the frontend.
 
 ```bash
 npm run dev
@@ -166,28 +176,43 @@ Open the URL displayed by Vite (typically `http://localhost:5173` or `http://loc
 |---------|----------|-------------|
 | GET | /notifications | Retrieve notifications |
 | GET | /notifications/unread-count | Retrieve unread notification count |
-| POST | /notifications | Create a notification |
-| PATCH | /notifications/:id/read | Mark a notification as read |
+| POST | /notifications | Create notification |
+| PATCH | /notifications/:id/read | Mark notification as read |
 | PATCH | /notifications/read-all | Mark all notifications as read |
-| POST | /notifications/trigger/member-invited | Trigger member invitation notification |
-| POST | /notifications/trigger/creator-reply | Trigger creator reply notification |
+| POST | /notifications/trigger/member-invited | Simulate Member Invitation event |
+| POST | /notifications/trigger/creator-reply | Simulate Creator Reply event |
 
 ---
 
-# Tenant Isolation Test
+# Demo Features
+
+The application includes several demonstration features to showcase notification management.
+
+- Switch between Tenant 1 and Tenant 2 directly from the user interface.
+- Switch users within each tenant.
+- Simulate business events using:
+  - Invite Member
+  - Creator Reply
+- Notification Bell displays unread notification count.
+- Automatic polling refreshes notifications every **10 seconds**.
+- Mark individual notifications as read.
+- Mark all notifications as read.
+- View notifications specific to the selected tenant and user.
+
+---
+
+# Tenant Isolation
 
 Tenant isolation is implemented using request headers.
 
-Example request headers:
-
-### Tenant A
+### Tenant 1
 
 ```
 X-Tenant-Id: t1
 X-User-Id: u1
 ```
 
-### Tenant B
+### Tenant 2
 
 ```
 X-Tenant-Id: t2
@@ -196,21 +221,24 @@ X-User-Id: u2
 
 ### Expected Behaviour
 
-- Tenant A can retrieve only notifications belonging to Tenant A.
-- Tenant B can retrieve only notifications belonging to Tenant B.
+- Tenant 1 can access only Tenant 1 notifications.
+- Tenant 2 can access only Tenant 2 notifications.
 - Unread notification counts remain isolated between tenants.
-- Mark Read affects only notifications belonging to the requesting tenant.
-- Mark All Read affects only notifications belonging to the requesting tenant.
+- Mark Read affects only the selected tenant.
+- Mark All Read affects only the selected tenant.
+- Switching tenants from the frontend immediately reloads notifications for the selected tenant.
 
 ---
 
 # Integration Write-up
 
-In an existing production application, this notification system would be integrated with the application's existing authentication and authorization mechanisms instead of relying on manually supplied request headers.
+In a production environment, this notification system would integrate with the application's existing authentication and authorization services instead of relying on manually supplied request headers.
 
-Notification creation would be triggered automatically through the application's event system whenever business events occur, such as member invitations or creator replies. The notification model, REST APIs, unread count logic, and tenant filtering can remain largely unchanged because they are independent of the authentication mechanism.
+Notification creation would be triggered automatically by business events such as member invitations, creator replies, report generation, or other application workflows. These events could originate from an event bus, message queue, or domain services.
 
-For production environments, additional improvements such as centralized logging, monitoring, retry mechanisms, and real-time notification delivery using WebSockets or Server-Sent Events could be introduced while maintaining compatibility with the existing REST APIs.
+The notification model, unread count logic, tenant filtering, and REST APIs would remain largely unchanged because they are independent of the authentication mechanism.
+
+For production deployments, the system could be extended with centralized logging, monitoring, retry mechanisms, background workers, rate limiting, and real-time notification delivery using WebSockets or Server-Sent Events while maintaining compatibility with the existing REST APIs.
 
 ---
 
@@ -218,17 +246,18 @@ For production environments, additional improvements such as centralized logging
 
 If additional time were available, I would:
 
-- Improve the frontend user interface and user experience.
 - Add search and filtering for notifications.
-- Implement pagination for handling large numbers of notifications.
+- Implement pagination for handling large notification datasets.
 - Replace polling with real-time notifications using WebSockets.
-- Improve validation and error handling across the application.
-- Test the application more thoroughly under different user and tenant scenarios.
-- Improve application logging for easier debugging and maintenance.
+- Implement JWT-based authentication and authorization.
+- Add automated unit and integration tests.
+- Improve validation and error handling.
+- Add Docker support.
+- Deploy the application to a cloud platform.
+- Add monitoring, structured logging, and health checks.
 
 ---
 
 # Author
 
 **Sourav Banerjee**
-
