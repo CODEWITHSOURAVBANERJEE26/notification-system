@@ -20,7 +20,7 @@ function NotificationBell({ tenantId, userId }) {
             fetchUnreadCount();
             fetchNotifications();
 
-        }, 30000);
+        }, 10000);
 
         return () => clearInterval(interval);
 
