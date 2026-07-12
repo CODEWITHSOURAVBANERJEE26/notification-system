@@ -199,6 +199,12 @@ The application includes several demonstration features to showcase notification
 - Mark all notifications as read.
 - View notifications specific to the selected tenant and user.
 
+  <p align="center">
+
+<img src="assets/project-preview.png" alt="Project Preview" width="900"/>
+
+</p>
+
 ---
 
 # Tenant Isolation
