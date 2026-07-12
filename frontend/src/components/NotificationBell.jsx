@@ -3,7 +3,7 @@ import axios from "axios";
 import BASE_URL from "../services/api";
 import NotificationList from "./NotificationList";
 
-function NotificationBell() {
+function NotificationBell({ tenantId, userId }) {
 
     const [count, setCount] = useState(0);
     const [notifications, setNotifications] = useState([]);
@@ -24,26 +24,24 @@ function NotificationBell() {
 
         return () => clearInterval(interval);
 
-    }, []);
+    }, [tenantId, userId]);
+
+    const headers = {
+        "X-Tenant-Id": tenantId,
+        "X-User-Id": userId
+    };
 
     const fetchUnreadCount = async () => {
 
         try {
 
             const response = await axios.get(
-
                 `${BASE_URL}/notifications/unread-count`,
-
-                {
-                    headers: {
-                        "X-Tenant-Id": "t1",
-                        "X-User-Id": "u1"
-                    }
-                }
-
+                { headers }
             );
 
             setCount(response.data.count);
+            setError("");
 
         } catch (error) {
 
@@ -59,18 +57,12 @@ function NotificationBell() {
         try {
 
             const response = await axios.get(
-
                 `${BASE_URL}/notifications`,
-
-                {
-                    headers: {
-                        "X-Tenant-Id": "t1",
-                        "X-User-Id": "u1"
-                    }
-                }
-
+                { headers }
             );
-   setNotifications(Array.isArray(response.data) ? response.data : []);
+
+            setNotifications(Array.isArray(response.data) ? response.data : []);
+            setError("");
 
         } catch (error) {
 
@@ -86,18 +78,9 @@ function NotificationBell() {
         try {
 
             await axios.patch(
-
                 `${BASE_URL}/notifications/${id}/read`,
-
                 {},
-
-                {
-                    headers: {
-                        "X-Tenant-Id": "t1",
-                        "X-User-Id": "u1"
-                    }
-                }
-
+                { headers }
             );
 
             fetchUnreadCount();
@@ -116,18 +99,9 @@ function NotificationBell() {
         try {
 
             await axios.patch(
-
                 `${BASE_URL}/notifications/read-all`,
-
                 {},
-
-                {
-                    headers: {
-                        "X-Tenant-Id": "t1",
-                        "X-User-Id": "u1"
-                    }
-                }
-
+                { headers }
             );
 
             fetchUnreadCount();
@@ -161,7 +135,13 @@ function NotificationBell() {
                 }}
             >
 
-                <h2>Notification System</h2>
+                <h2>
+                    Notification System
+                    <br />
+                    <small>
+                        Tenant: {tenantId} | User: {userId}
+                    </small>
+                </h2>
 
                 <div
                     style={{
@@ -171,43 +151,38 @@ function NotificationBell() {
                     onClick={() => setShowList(!showList)}
                 >
 
-                     🔔 {count}
+                    🔔 {count}
 
                 </div>
 
             </div>
 
             {
-    error && (
+                error && (
 
-        <div
-            style={{
-                marginTop: "20px",
-                padding: "15px",
-                backgroundColor: "#ffecec",
-                color: "#d8000c",
-                border: "1px solid #d8000c",
-                borderRadius: "8px"
-            }}
-        >
+                    <div
+                        style={{
+                            marginTop: "20px",
+                            padding: "15px",
+                            backgroundColor: "#ffecec",
+                            color: "#d8000c",
+                            border: "1px solid #d8000c",
+                            borderRadius: "8px"
+                        }}
+                    >
 
-            <strong>Backend Connection Error</strong>
+                        <strong>Backend Connection Error</strong>
 
-            <br /><br />
+                        <br /><br />
 
-            {error}
+                        {error}
 
-            <br /><br />
+                    </div>
 
-            MongoDB Atlas connection could not be established on this development machine.
-
-        </div>
-
-    )
-}
+                )
+            }
 
             {
-
                 showList && (
 
                     <NotificationList
@@ -221,7 +196,6 @@ function NotificationBell() {
                     />
 
                 )
-
             }
 
         </div>
@@ -231,8 +205,4 @@ function NotificationBell() {
 }
 
 export default NotificationBell;
-
-
-
-
 
