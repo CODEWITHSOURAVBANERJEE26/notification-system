@@ -214,13 +214,9 @@ function NotificationBell({ tenantId, userId }) {
                 showList && (
 
                     <NotificationList
-
                         notifications={notifications}
-
                         onMarkRead={markAsRead}
-
                         onMarkAllRead={markAllAsRead}
-
                     />
 
                 )
