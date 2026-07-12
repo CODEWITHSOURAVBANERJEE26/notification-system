@@ -186,6 +186,10 @@ Open the URL displayed by Vite (typically `http://localhost:5173` or `http://loc
 
 # Demo Features
 
+<p align="center">
+  <img src="assets/project-preview.png" alt="Project Preview" width="900"/>
+</p>
+
 The application includes several demonstration features to showcase notification management.
 
 - Switch between Tenant 1 and Tenant 2 directly from the user interface.
@@ -193,17 +197,11 @@ The application includes several demonstration features to showcase notification
 - Simulate business events using:
   - Invite Member
   - Creator Reply
-- Notification Bell displays unread notification count.
+- Notification Bell displays the unread notification count.
 - Automatic polling refreshes notifications every **10 seconds**.
 - Mark individual notifications as read.
 - Mark all notifications as read.
 - View notifications specific to the selected tenant and user.
-
-  <p align="center">
-
-<img src="assets/project-preview.png" alt="Project Preview" width="900"/>
-
-</p>
 
 ---
 
