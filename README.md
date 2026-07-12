@@ -186,10 +186,6 @@ Open the URL displayed by Vite (typically `http://localhost:5173` or `http://loc
 
 # Demo Features
 
-<p align="center">
-  <img src="assets/project-preview.png" alt="Project-Preview" width="900"/>
-</p>
-
 The application includes several demonstration features to showcase notification management.
 
 - Switch between Tenant 1 and Tenant 2 directly from the user interface.
